@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import Clock from './clock.js';
 import App from './App';
+import { Button } from '@material-ui/core';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
@@ -16,6 +17,7 @@ class Page extends React.Component {
     return (
       <>
         <Clock />
+        <Button color="primary">Hello World</Button>
       </>
     );
   }
