@@ -17,7 +17,7 @@ class Page extends React.Component {
     return (
       <>
         <Clock />
-        <Button color="primary">Hello World</Button>
+        <Button variant="contained" color="primary">Hello World</Button>
       </>
     );
   }
