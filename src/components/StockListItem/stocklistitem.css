@@ -1,0 +1,10 @@
+
+.StockListStyle {
+    list-style: none;
+    display: flex;
+    text-align: left;
+    flex-flow: column wrap;
+  }
+.StockKey {
+  font-weight: 900;
+}
