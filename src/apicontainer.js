@@ -115,57 +115,57 @@ class DisplayContent extends Component {
         const result = res.data['Time Series (Daily)'];
         let lastDate = new Date();
         lastDate.setDate(lastDate.getDate() - 1);
-        let bIncrementCounter = false;
         //Only interested in last 7 days
         for (let i = 0; i < nDisplayCount; ) {
             let nMonth = (lastDate.getMonth() < 9) ? '0' + (lastDate.getMonth() + 1) : (lastDate.getMonth() + 1);
             let nDate = (lastDate.getDate() < 10) ? '0' + (lastDate.getDate()) : (lastDate.getDate());
             let strDate = lastDate.getFullYear() + '-' + nMonth + '-' + nDate;
-
-            let strValuesChart = result[strDate];
-            if (strValuesChart !== undefined) {
-                let time =  (lastDate.getMonth() + 1) + '/' + lastDate.getDate();
-                let amount = strValuesChart['4. close'];
-                finalresult.unshift({time, amount});
-                bIncrementCounter = true;
-            }
-            //Details
-            let strValuesDetails = result[strDate];
-            if (strValuesDetails !== undefined) {
-                let objRow = {
-                  date: (lastDate.getMonth() + 1) + '/' + lastDate.getDate() + '/' + lastDate.getFullYear(),
-                  open: strValuesDetails['1. open'],
-                  high: strValuesDetails['2. high'],
-                  low: strValuesDetails['3. low'],
-                  close: strValuesDetails['4. close'],
-                  volume: strValuesDetails['5. volume']
+            if (result === undefined) {
+                const showNote = res.data['Note'];
+                if (showNote !== undefined) {
+                  alert(showNote);
                 }
+                break;
+            } else {
+                let strValuesChart = result[strDate];
+                //Check if date is a holiday or weekend
+                if (strValuesChart !== undefined) {
+                  let time =  (lastDate.getMonth() + 1) + '/' + lastDate.getDate();
+                  let amount = strValuesChart['4. close'];
+                  finalresult.unshift({time, amount});
 
-                this.setState({
-                    lastdaysdetails: this.state.lastdaysdetails.concat(objRow)
-                });
-                //Yesterday
-                if (this.state.yesterday.length < 1) {
-                    let stockrename = {
-                        symbol: this.props.stock, 
-                        price: objRow.close, 
-                        open: objRow.open, 
-                        high: objRow.high, 
-                        low: objRow.low, 
-                        volume: objRow.volume
+                  //Details
+                  let objRow = {
+                  date: (lastDate.getMonth() + 1) + '/' + lastDate.getDate() + '/' + lastDate.getFullYear(),
+                  open: strValuesChart['1. open'],
+                  high: strValuesChart['2. high'],
+                  low: strValuesChart['3. low'],
+                  close: strValuesChart['4. close'],
+                  volume: strValuesChart['5. volume']
+                  }
+
+                  this.setState({
+                      lastdaysdetails: this.state.lastdaysdetails.concat(objRow)
+                  });
+                  //Yesterday
+                  if (this.state.yesterday.length < 1) {
+                      let stockrename = {
+                          symbol: this.props.stock, 
+                          price: objRow.close, 
+                          open: objRow.open, 
+                          high: objRow.high, 
+                          low: objRow.low, 
+                          volume: objRow.volume
                       };
                       this.setState({
-                        yesterday: this.state.yesterday.concat(stockrename)
+                          yesterday: this.state.yesterday.concat(stockrename)
                       });
+                  }
+                  i++;
                 }
-                bIncrementCounter = true;
-            }
-            if (bIncrementCounter) {
-              i++;
-              bIncrementCounter = false;
             }
 
-            //counter to day previous
+            //counter to day prvious
             lastDate.setDate(lastDate.getDate() - 1);
         }
 
