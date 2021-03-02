@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux'
+import store from './components/Store/store'
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import registerServiceWorker from './registerServiceWorker';
@@ -9,7 +11,9 @@ class Page extends React.Component {
   render() {
     return (
       <>
+      <Provider store={store}>
         <Dashboard />
+      </Provider>
       </>
     );
   }
