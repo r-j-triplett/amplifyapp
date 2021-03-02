@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
+import { addStock } from './components/Actions/actions'
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,10 +16,12 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import DisplayContent from './apicontainer';
 import { CookiesProvider } from "react-cookie";
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
+//import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-
+import Button from '@material-ui/core/Button';
+//import DashboardIcon from '@material-ui/icons/Dashboard';
+import StockService from './components/StockServices/stockservice';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 const drawerWidth = 240;
 
 const useStyles = (theme) => ({
@@ -33,6 +37,9 @@ const useStyles = (theme) => ({
     justifyContent: 'flex-end',
     padding: '0 8px',
     ...theme.mixins.toolbar,
+  },
+  textButton: {
+    width: 180,
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -51,6 +58,9 @@ const useStyles = (theme) => ({
   },
   menuButton: {
     marginRight: 36,
+  },
+  editButton: {
+    display: 'inline',
   },
   menuButtonHidden: {
     display: 'none',
@@ -99,6 +109,13 @@ const useStyles = (theme) => ({
   },
 });
 
+const mapStateToProps = (state) => {
+  return {
+    stocklist: state.allStocks,
+    stockpick: state.stockpick
+  }
+}
+
 //export default function Dashboard() {
 class Dashboard extends Component {
   constructor(props) {
@@ -106,7 +123,8 @@ class Dashboard extends Component {
 
     this.state = {
         open: true,
-        stock: 'AMZN'
+        stock: this.props.stockpick,
+        stocklist: this.props.stocklist
     };
   };
 
@@ -122,13 +140,14 @@ class Dashboard extends Component {
   handleDrawerClose = () => {
     this.setOpen(false);
   }
-  getStocks = () => {
-    let stockArray = ['AMZN', 'FUV', 'TSLA', 'MEDT'];//Default
-    return stockArray;
-  }
   setStockPick = (dPick, ev) => {
     this.setState({stock: dPick});
+    let data = {
+      stock: (dPick).toUpperCase()
+    }
+    this.props.addStock(data);
   }
+
   render () {
     let stockNum = 0;
     const { classes } = this.props;
@@ -170,21 +189,24 @@ class Dashboard extends Component {
         <Divider />
         <List>
         <div>
-            {this.getStocks().map((stock) => (
-                <ListItem key={stockNum++} button onClick={(ev) => this.setStockPick(stock, ev)}>
-                <ListItemIcon>
-                    <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary={stock} />
+            {this.state.stocklist.map((stock) => (
+                <ListItem key={stockNum++}>
+                  <Button className={clsx(classes.textButton, !this.state.open && classes.menuButtonHidden)} onClick={(ev) => this.setStockPick(stock, ev)}>
+                    <ListItemText className={classes.root} primary={stock} />
+                  </Button>
+                  <ListItemSecondaryAction className={clsx(classes.editButton, !this.state.open && classes.menuButtonHidden)}>      
+                    <StockService stock={stock} stockpos={stockNum} />
+                  </ListItemSecondaryAction>
                 </ListItem>
             ))}
         </div>
         
         </List>
+
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-          <DisplayContent stock={this.state.stock} key={id}/>
+          <DisplayContent stock={this.props.stockpick} key={id}/>
       </main>
     </div>
     </CookiesProvider>
@@ -192,4 +214,4 @@ class Dashboard extends Component {
   }
 }
 
-export default withStyles(useStyles)(Dashboard)
+export default connect(mapStateToProps, {addStock})(withStyles(useStyles)(Dashboard))
