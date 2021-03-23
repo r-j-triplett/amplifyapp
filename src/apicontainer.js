@@ -105,7 +105,7 @@ class DisplayContent extends Component {
     };
     this.getData();
   };
-  getData = () => { 
+  getData = async() => { 
   const key = 'GMHJV0B7E3797NVI';
   const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${this.state.stock}&apikey=${key}`;
   let finalresult = [];
