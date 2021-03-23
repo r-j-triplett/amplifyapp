@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { addStock } from './components/Actions/actions'
+import axios from 'axios';
+import { addStock, initStockList } from './components/Actions/actions'
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -22,6 +23,7 @@ import Button from '@material-ui/core/Button';
 //import DashboardIcon from '@material-ui/icons/Dashboard';
 import StockService from './components/StockServices/stockservice';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import HourMin from './components/Clock/time'
 const drawerWidth = 240;
 
 const useStyles = (theme) => ({
@@ -116,7 +118,6 @@ const mapStateToProps = (state) => {
   }
 }
 
-//export default function Dashboard() {
 class Dashboard extends Component {
   constructor(props) {
     super(props);
@@ -126,6 +127,19 @@ class Dashboard extends Component {
         stock: this.props.stockpick,
         stocklist: this.props.stocklist
     };
+    const url = 'https://c9r5ofpmxb.execute-api.us-east-2.amazonaws.com/default/getStockList?name=Robert';
+   // const url = 'https://4ica1xubik.execute-api.us-east-1.amazonaws.com/dev/getstocklist?name=Robert';
+    axios.get(url)
+      .then(res => {
+        let initList = (res.data.Item.stocklist).split(',');
+        let data = {
+          stocklist: initList
+        }
+        this.props.initStockList(data);
+        this.setState({
+          stocklist: initList
+        });
+      })
   };
 
   setOpen = (cstate) => {
@@ -172,6 +186,7 @@ class Dashboard extends Component {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             Stock Information
           </Typography>
+          <HourMin />
         </Toolbar>
       </AppBar>
       <Drawer
@@ -214,4 +229,4 @@ class Dashboard extends Component {
   }
 }
 
-export default connect(mapStateToProps, {addStock})(withStyles(useStyles)(Dashboard))
+export default connect(mapStateToProps, {addStock, initStockList})(withStyles(useStyles)(Dashboard))

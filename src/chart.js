@@ -14,7 +14,7 @@ function DisplayChart(data) {
       <LineChart
           data={data.data}
           margin={{
-            top: 16,
+            top: 33,
             right: 16,
             bottom: 0,
             left: 24,

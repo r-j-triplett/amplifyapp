@@ -7,6 +7,13 @@ export const addStockList = (data) => ({
   }
 })
 
+export const initStockList = (data) => ({
+  type: "INITIATE_STOCK_LIST",
+  payload : {
+    stocklist: data.stocklist
+  }
+})
+
 export const addStock = (data) => ({
   type: "STOCK_PICK",
   payload : {

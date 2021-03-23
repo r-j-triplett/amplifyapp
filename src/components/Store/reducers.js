@@ -1,6 +1,6 @@
 let stockState = {
-  allStocks: ['AMZN', 'FUV', 'TSLA', 'MEDT'],
-  stockpick: 'AMZN'
+  allStocks: [],
+  stockpick: ''
 };
 
 const reducer = (state = stockState, action) => {
@@ -9,6 +9,10 @@ const reducer = (state = stockState, action) => {
       ...state.allStocks,
       stockpick: action.payload.stock
     };
+    case 'INITIATE_STOCK_LIST': return {
+      allStocks: action.payload.stocklist,
+      stockpick: action.payload.stocklist[0]
+    }
     case 'UPDATE_STOCK_LIST': 
     state.allStocks[action.payload.id] = action.payload.stock;
     return {
